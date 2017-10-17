@@ -1,16 +1,8 @@
 import config
 import telebot
-import yaml
+import schedule
 
 bot = telebot.TeleBot(config.token)
-
-schedule = {
-    'Технический трек 1': 'track_1.yml',
-    'Технический трек 2': 'track_2.yml',
-    'Технический трек 3': 'track_3.yml',
-    'Технический трек 4': 'track_4.yml',
-    'Бизнес трек': 'track_business.yml'
-}
 
 
 @bot.message_handler(commands=['start'])
@@ -26,12 +18,8 @@ def on_start(message):
 @bot.message_handler(content_types=["text"])
 def on_text(message):
     try:
-        file = './schedule/' + schedule[message.text]
-        with open(file, 'r') as f:
-            track = yaml.load(f)
-
         text = ''
-        for lecture in track:
+        for lecture in schedule.get_track(message.text)['schedule']:
             time = lecture['time']
             title = lecture['title']
             text += f'***{time}***\n{title}\n'
@@ -41,7 +29,7 @@ def on_text(message):
             text += '\n'
 
         bot.send_message(message.chat.id, text, parse_mode='MARKDOWN')
-    except KeyError as ex:
+    except TypeError as ex:
         return
 
 
