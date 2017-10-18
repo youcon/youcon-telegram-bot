@@ -1,8 +1,8 @@
-import config
 import telebot
 import schedule
+import os
 
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(os.environ.get("TELEGRAM_TOKEN", None))
 
 
 @bot.message_handler(commands=['start'])
