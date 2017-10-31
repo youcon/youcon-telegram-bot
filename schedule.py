@@ -13,3 +13,7 @@ def get_track(title):
     for track in schedule:
         if track['name'] == title:
             return track
+
+
+def get_all():
+    return schedule
